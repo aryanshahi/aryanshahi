@@ -1,0 +1,82 @@
+
+
+enum Categories {
+    Fitness
+    Skincare
+
+}
+
+
+enum TargetSegment {
+    Men 
+    Women
+}
+
+
+type Services @model
+@key(fields: [ "plan_id" ])
+{
+  service_id: ID! 
+  type: Int!
+  name: String!
+  description: String!
+  category: Categories!
+  subcategory: String
+  active_for_sale: Boolean!
+  standalone: Boolean
+  warranty: Long
+  isCustomized: Boolean
+  isReturnable: Boolean
+  Accredited_by: String
+  #plan: [Plans] @connection (fields: [ " " ])
+}
+
+type Plans @model
+#@key(name: "byCategorybyPrice", fields: [ "category", "basePrice"])
+@key(fields: [ "plan_id", "rank"])
+{
+  plan_id: ID!
+  serviceList: [Services]!
+  category: Categories!
+  duration: Int!
+  basePrice: Int!
+  name: String!
+  rank: Int! #SortKey
+  isRenewable: Boolean
+  isPausable: Boolean
+  product: [ Services ] @connection (fields: [ "serviceList" ])
+
+}
+
+type SKU @model
+#@key (name: "SKUbyName", fields: [ "name"])
+@key (fields: [ "sku", "service_id"])
+
+{
+    sku_id: ID!
+    service_id: ID! #SortKey
+    name: String!
+    Schedule: String
+    inventory: Int
+    side_effects: String
+    isOrganic: Bool
+    Origin_country: String
+    targetSegment: TargetSegment
+    product: [ Products ] @connection (fields: [ "product_id"])
+}
+
+
+type Offers @model
+@key (fields: [ "offer_id", "startDate"])
+
+{
+    offer_id: ID!
+    startDate: AWSDateTime! #SortKey
+    endDate: AWSDateTime!
+    minPlanPrice: Int
+    target_segment: Int
+    discountDuration: Int
+    discountPercent: Int
+    limited: Boolean
+
+}
